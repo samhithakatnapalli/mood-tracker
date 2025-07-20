@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fceff9;
+      color: #333;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #d63384;
+    }
+    select, button {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      margin: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #log {
+      margin-top: 2rem;
+    }
+    .entry {
+      margin: 0.5rem;
+      background-color: #fff0f5;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌤️ Daily Mood Tracker</h1>
+  <label for="mood">How are you feeling today?</label>
+  <select id="mood">
+    <option value="😊 Happy">😊 Happy</option>
+    <option value="😢 Sad">😢 Sad</option>
+    <option value="😤 Angry">😤 Angry</option>
+    <option value="😴 Tired">😴 Tired</option>
+    <option value="😐 Meh">😐 Meh</option>
+    <option value="🤯 Stressed">🤯 Stressed</option>
+  </select>
+  <button onclick="saveMood()">Save Mood</button>
+
+  <div id="log">
+    <h2>Your Mood Entries</h2>
+    <div id="entries"></div>
+  </div>
+
+  <script>
+    function saveMood() {
+      const mood = document.getElementById("mood").value;
+      const date = new Date().toLocaleDateString();
+      const entry = `${date}: ${mood}`;
+
+      // Save to local storage
+      let moods = JSON.parse(localStorage.getItem("moodLog")) || [];
+      moods.push(entry);
+      localStorage.setItem("moodLog", JSON.stringify(moods));
+
+      showMoods();
+    }
+
+    function showMoods() {
+      const container = document.getElementById("entries");
+      container.innerHTML = "";
+
+      const moods = JSON.parse(localStorage.getItem("moodLog")) || [];
+      moods.forEach((entry) => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.textContent = entry;
+        container.appendChild(div);
+      });
+    }
+
+    // Load moods on page load
+    window.onload = showMoods;
+  </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
